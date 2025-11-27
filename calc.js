@@ -5,21 +5,34 @@ const decimal = document.querySelector(".decimal");
 const clear = document.querySelector(".clear");
 const equal = document.querySelector(".equal");
 
+const MAX_CHARS_ALLOWED = 26;
+
 let currentInput = "";
 let operatorUsed = false;
 let equalsPressed = false;
 let isError = false;
+let isDisplayOverflow = false;
 
 function updateDisplay(value) {
     display.style.color = "#fff";
 
-    currentInput += value;
-    display.textContent = currentInput;
+    if ((currentInput + value).length <= MAX_CHARS_ALLOWED) {
+        currentInput += value;
+        display.textContent = currentInput;
+    } else {
+        display.textContent = "Maximum length of input reached";
+        isDisplayOverflow = true;
+    }
+
+    if (isDisplayOverflow) {
+        display.style.color = "#dd9300";
+        return;
+    }
 }
 
 operators.forEach((operator) => {
     operator.addEventListener("click", () => {
-        if (isError) return;
+        if (isError || isDisplayOverflow) return;
 
         if (currentInput === "") {
             return;
@@ -43,7 +56,7 @@ operators.forEach((operator) => {
 
 digits.forEach((digit) => {
     digit.addEventListener("click", () => {
-        if (isError) return;
+        if (isError || isDisplayOverflow) return;
 
         if (equalsPressed) {
             currentInput = "";
@@ -57,7 +70,7 @@ digits.forEach((digit) => {
 });
 
 decimal.addEventListener("click", () => {
-    if (isError) return;
+    if (isError || isDisplayOverflow) return;
 
     const parts = currentInput.split(/[+−×÷]/);
     const lastPart = parts[parts.length - 1];
@@ -73,10 +86,11 @@ clear.addEventListener("click", () => {
     operatorUsed = false;
     equalsPressed = false;
     isError = false;
+    isDisplayOverflow = false;
 });
 
 equal.addEventListener("click", () => {
-    if (operatorUsed && !equalsPressed && !isError) {
+    if (operatorUsed && !equalsPressed && !isError && !isDisplayOverflow) {
         operate();
         equalsPressed = true;
     }
