@@ -21,14 +21,14 @@ operators.forEach((operator) => {
     operator.addEventListener("click", () => {
         if (isError) return;
 
+        if (currentInput === "") {
+            return;
+        }
+
         if (operatorUsed || currentInput === "") {
             operate();
 
             if (isError) return;
-        }
-
-        if (currentInput === "") {
-            return;
         }
 
         if (equalsPressed) {
