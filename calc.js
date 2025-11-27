@@ -22,6 +22,12 @@ operators.forEach((operator) => {
         if (isError) return;
 
         if (operatorUsed || currentInput === "") {
+            operate();
+
+            if (isError) return;
+        }
+
+        if (currentInput === "") {
             return;
         }
 
